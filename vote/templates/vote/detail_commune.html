@@ -1,0 +1,47 @@
+{% extends 'vote/base.html' %}
+
+{% block title %}Détails de {{ commune.nom }}{% endblock %}
+
+{% block content %}
+<h1 class="text-center my-4">{{ commune.nom }}</h1>
+
+<div class="text-center mb-4">
+    <p class="h5">Note moyenne :
+        {% if commune.note_moyenne %}
+            <span class="badge bg-primary">{{ commune.note_moyenne }}</span>
+        {% else %}
+            <span class="badge bg-secondary">Non notée</span>
+        {% endif %}
+    </p>
+</div>
+
+<!-- Galerie d'images avec Lightbox -->
+<div class="row">
+    {% for image in commune.images.all %}
+    <div class="col-md-4 my-3">
+        <a href="{{ image.image.url }}" data-lightbox="commune-gallery" data-title="Image de {{ commune.nom }}">
+            <img src="{{ image.image.url }}" class="img-fluid rounded shadow-sm" alt="Image de {{ commune.nom }}">
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<hr>
+
+<!-- Formulaire de notation -->
+<h3 class="text-center mt-4">Donnez votre avis</h3>
+<form method="post" action="{% url 'vote_commune' commune.id %}" class="mx-auto" style="max-width: 500px;">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="rating" class="form-label">Votre note (1 à 5)</label>
+        <select name="rating" id="rating" class="form-select">
+            <option value="1">1 - Mauvais</option>
+            <option value="2">2 - Acceptable</option>
+            <option value="3">3 - Moyen</option>
+            <option value="4">4 - Bon</option>
+            <option value="5">5 - Excellent</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success w-100">Envoyer</button>
+</form>
+{% endblock %}

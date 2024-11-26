@@ -1,0 +1,45 @@
+{% extends 'vote/base.html' %}
+
+{% block title %}Liste des Communes{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Liste des Communes</h1>
+
+<div class="row">
+    {% for commune in communes %}
+    <div class="col-md-4 my-3">
+        <div class="card shadow-sm border-light rounded">
+            <!-- Image de la commune -->
+            <img src="{{ commune.images.first.image.url }}" class="card-img-top rounded-top" alt="Image de {{ commune.nom }}" style="height: 200px; object-fit: cover;">
+
+            <div class="card-body">
+                <!-- Nom de la commune -->
+                <h5 class="card-title text-center">{{ commune.nom }}</h5>
+
+                <!-- Note moyenne affichée avec des étoiles -->
+                <div class="d-flex justify-content-center align-items-center mb-2">
+                    <span class="badge bg-warning text-dark">
+                        {% if commune.note_moyenne %}
+                            {{ commune.note_moyenne }}
+                            <i class="fas fa-star"></i>
+                        {% else %}
+                            Non notée
+                        {% endif %}
+                    </span>
+                </div>
+
+                <!-- Description ou message pour encourager l'action -->
+                <p class="card-text text-center text-muted">Découvrez cette commune et ses attraits !</p>
+
+                <!-- Bouton pour voir plus -->
+                <div class="text-center">
+                    <a href="{% url 'detail_commune' commune.id %}" class="btn btn-primary btn-sm">
+                        Voir plus
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

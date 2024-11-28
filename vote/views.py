@@ -1,7 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from openpyxl.styles import Alignment
+from openpyxl.workbook import Workbook
+
 from .models import Vote, Image, Commune
 # Create your views here.
 
@@ -36,32 +40,40 @@ def detail_commune(request, commune_id):
     commune.calculer_note_moyenne()
     return render(request, 'vote/detail_commune.html', {'commune': commune})
 
+
 @login_required
 def vote_commune(request, commune_id):
     if request.method == 'POST':
-        # Récupère la commune en fonction de son ID
         commune = get_object_or_404(Commune, id=commune_id)
-        note = request.POST.get('rating')
 
-        if note and note.isdigit():
-            note = int(note)
-            if 1 <= note <= 5:
-                # Vérifier si l'utilisateur a déjà voté pour cette commune
-                if Vote.objects.filter(commune=commune, user=request.user).exists():
-                    messages.error(request, "Vous avez déjà voté pour cette commune.")
-                else:
-                    # Créer un nouveau vote pour l'utilisateur connecté
-                    Vote.objects.create(commune=commune, note=note, user=request.user)
-                    # Recalcule la note moyenne de la commune après le vote
-                    commune.calculer_note_moyenne()
-                    messages.success(request, 'Votre vote a été enregistré.')
+        try:
+            qualite_site = int(request.POST.get('qualite_site', 0))
+            originalite_support = int(request.POST.get('originalite_support', 0))
+
+            # Validation des données
+            if not (1 <= qualite_site <= 5 and 1 <= originalite_support <= 5):
+                raise ValueError("Les notes doivent être entre 1 et 5.")
+
+            # Vérification si l'utilisateur a déjà voté
+            if Vote.objects.filter(commune=commune, user=request.user).exists():
+                messages.warning(request, "Vous avez déjà voté pour cette commune.")
             else:
-                messages.error(request, 'La note doit être comprise entre 1 et 5.')
-        else:
-            messages.error(request, 'Vote invalide.')
-        print(f"Note moyenne après le calcul: {commune.note_moyenne}")  # Debugging line
+                # Création du vote
+                Vote.objects.create(
+                    commune=commune,
+                    user=request.user,
+                    qualite_site=qualite_site,
+                    originalite_support=originalite_support,
+                )
+                # Recalcul de la note moyenne
+                commune.calculer_note_moyenne()
+                messages.success(request, "Votre vote a été enregistré.")
+        except ValueError as e:
+            messages.error(request, str(e))
 
         return redirect('detail_commune', commune_id=commune.id)
+
+
 @login_required
 def rechercher_commune(request):
     query = request.GET.get('q', '')

@@ -3,45 +3,218 @@
 {% block title %}Détails de {{ commune.nom }}{% endblock %}
 
 {% block content %}
-<h1 class="text-center my-4">{{ commune.nom }}</h1>
+<!-- Style personnalisé -->
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+    }
 
-<div class="text-center mb-4">
-    <p class="h5">Note moyenne :
-        {% if commune.note_moyenne %}
-            <span class="badge bg-primary">{{ commune.note_moyenne }}</span>
-        {% else %}
-            <span class="badge bg-secondary">Non notée</span>
-        {% endif %}
-    </p>
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #156183;
+        text-align: center;
+        margin-top: 50px;
+        letter-spacing: 1px;
+        animation: slideIn 1s ease-out;
+    }
+
+    .badge {
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 1.2rem;
+    }
+
+    .badge.bg-primary {
+        background-color: #156183;
+        color: white;
+        font-weight: 600;
+    }
+
+    .badge.bg-secondary {
+        background-color: #fab734;
+        color: white;
+        font-weight: 600;
+    }
+
+    .note-section {
+        background-color: #156183;
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        animation: slideIn 1s ease-out;
+    }
+
+    .gallery-wrapper {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin: 30px 0;
+        opacity: 0;
+        animation: fadeInUp 1.5s forwards;
+    }
+
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-section {
+        margin-top: 60px;
+        background-color: #156183;
+        padding: 40px 30px;
+        border-radius: 15px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        animation: slideIn 1s ease-out;
+    }
+
+    .form-section h3 {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #fab734;
+    }
+
+    .form-label {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .form-select, .btn-success {
+        font-size: 1.1rem;
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+    .form-select {
+        border: 2px solid #fab734;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-select:focus {
+        border-color: #156183;
+    }
+
+    .btn-success {
+        background-color: #fab734;
+        border-color: #fab734;
+        color: white;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background-color: #156183;
+        border-color: #156183;
+    }
+
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        0% {
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Titre -->
+    <h1>{{ commune.nom }}</h1>
+
+    <!-- Section Note moyenne avec background -->
+    <div class="note-section text-center">
+        <p class="h5">Note moyenne :
+            {% if commune.note_moyenne %}
+                <span class="badge bg-primary">{{ commune.note_moyenne }}</span>
+            {% else %}
+                <span class="badge bg-secondary">Non notée</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Galerie d'images avec Lightbox -->
+    <div class="gallery-wrapper">
+        {% for image in commune.images.all %}
+        <div class="gallery-item">
+            <a href="{{ image.image.url }}" data-lightbox="commune-gallery" data-title="Image de {{ commune.nom }}">
+                <img src="{{ image.image.url }}" alt="Image de {{ commune.nom }}">
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <!-- Formulaire de notation -->
+    <div class="form-section">
+        <h3>Donnez votre avis sur cette commune</h3>
+        <form method="post" action="{% url 'vote_commune' commune.id %}">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="qualite_site" class="form-label">Qualité du site de déploiement (1 à 5)</label>
+                <select name="qualite_site" id="qualite_site" class="form-select">
+                    <option value="1">1 - Très faible</option>
+                    <option value="2">2 - Faible</option>
+                    <option value="3">3 - Moyenne</option>
+                    <option value="4">4 - Bonne</option>
+                    <option value="5">5 - Excellente</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="originalite_support" class="form-label">Originalité du support publicitaire (1 à 5)</label>
+                <select name="originalite_support" id="originalite_support" class="form-select">
+                    <option value="1">1 - Très faible</option>
+                    <option value="2">2 - Faible</option>
+                    <option value="3">3 - Moyenne</option>
+                    <option value="4">4 - Bonne</option>
+                    <option value="5">5 - Excellente</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Envoyer</button>
+        </form>
+    </div>
 </div>
 
-<!-- Galerie d'images avec Lightbox -->
-<div class="row">
-    {% for image in commune.images.all %}
-    <div class="col-md-4 my-3">
-        <a href="{{ image.image.url }}" data-lightbox="commune-gallery" data-title="Image de {{ commune.nom }}">
-            <img src="{{ image.image.url }}" class="img-fluid rounded shadow-sm" alt="Image de {{ commune.nom }}">
-        </a>
-    </div>
-    {% endfor %}
-</div>
-
-<hr>
-
-<!-- Formulaire de notation -->
-<h3 class="text-center mt-4">Donnez votre avis</h3>
-<form method="post" action="{% url 'vote_commune' commune.id %}" class="mx-auto" style="max-width: 500px;">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="rating" class="form-label">Votre note (1 à 5)</label>
-        <select name="rating" id="rating" class="form-select">
-            <option value="1">1 - Mauvais</option>
-            <option value="2">2 - Acceptable</option>
-            <option value="3">3 - Moyen</option>
-            <option value="4">4 - Bon</option>
-            <option value="5">5 - Excellent</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success w-100">Envoyer</button>
-</form>
 {% endblock %}

@@ -7,52 +7,109 @@
     <title>{% block title %}Sondage Communes{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet">
-    <!-- Inclure Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Style personnalisé pour le bouton de déconnexion */
+        /* Polices principales */
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        h1, h2, h3, .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(90deg, #0d3b66, #156183);
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .navbar-nav .nav-link {
+            color: #e0e0e0;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            color: #00bcd4; /* Teal */
+        }
+
+        /* Formulaire de recherche */
+        .input-group input {
+            border-radius: 30px;
+            border: 1px solid #0d3b66;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00bcd4; /* Teal */
+        }
+
+        .search-btn {
+            border-color: #0d3b66;
+            background-color: #0d3b66;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #00bcd4; /* Teal */
+            color: #ffffff;
+        }
+
+        /* Bouton Déconnexion */
         .logout-user a {
             font-size: 1rem;
-            color: #007bff;
+            color: #ffffff;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
 
         .logout-user a:hover {
-            text-decoration: underline;
+            color: #00bcd4; /* Teal */
         }
 
-        /* Ajout d'un espacement pour les alertes */
+        /* Messages */
         .alert {
             margin-top: 20px;
+            animation: fadeIn 1s;
         }
 
-        /* Barre de recherche avec une largeur spécifique */
-        .input-group input {
-            max-width: 400px;
-        }
-
-        /* Espacement pour le contenu principal */
-        .container {
-            margin-top: 30px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <!-- Barre de navigation -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'liste_communes' %}">Sondage Communes</a>
+            <a class="navbar-brand" href="{% url 'liste_communes' %}">
+                <i class="fas fa-chart-pie"></i> Bilan : Bright Orange
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <form method="get" action="{% url 'rechercher_commune' %}" class="d-flex">
-                            <input type="text" name="q" class="form-control me-2" placeholder="Rechercher une commune"
-                                value="{{ query }}">
-                            <button class="btn btn-outline-primary" type="submit">Rechercher</button>
+                        <form method="get" action="{% url 'rechercher_commune' %}" class="d-flex input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Rechercher une commune" value="{{ query }}">
+                            <button class="btn search-btn" type="submit">Rechercher</button>
                         </form>
                     </li>
                     <li class="nav-item ms-3">
@@ -67,7 +124,7 @@
         </div>
     </nav>
 
-    <!-- Affichage des messages -->
+    <!-- Messages flash -->
     {% if messages %}
     <div class="container">
         {% for message in messages %}
@@ -79,9 +136,8 @@
     {% endif %}
 
     <!-- Contenu de la page -->
-    <div class="container my-4">
+    <div class="container my-5">
         {% block content %}
-        <!-- Contenu spécifique à chaque page -->
         {% endblock %}
     </div>
 

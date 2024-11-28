@@ -3,43 +3,81 @@
 {% block title %}Liste des Communes{% endblock %}
 
 {% block content %}
-<h1 class="text-center mb-4">Liste des Communes</h1>
+<div class="container py-5">
+    <!-- Titre principal -->
+    <h1 class="text-center fw-bold mb-4" style="color: #156183; font-family: 'Poppins', sans-serif;">Explorez les Communes</h1>
+    <p class="text-center text-muted mb-5" style="font-size: 1.2rem; font-family: 'Roboto', sans-serif;">
+        Découvrez et notez les plus belles communes de la région. Chaque vote compte pour valoriser leur charme unique !
+    </p>
 
-<div class="row">
-    {% for commune in communes %}
-    <div class="col-md-4 my-3">
-        <div class="card shadow-sm border-light rounded">
-            <!-- Image de la commune -->
-            <img src="{{ commune.images.first.image.url }}" class="card-img-top rounded-top" alt="Image de {{ commune.nom }}" style="height: 200px; object-fit: cover;">
+    <!-- Cartes des communes -->
+    <div class="row">
+        {% for commune in communes %}
+        <div class="col-md-4 my-3 d-flex align-items-stretch">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="transition: transform 0.3s ease;">
+                <!-- Image de la commune -->
+                <img
+                    src="{{ commune.images.first.image.url }}"
+                    class="card-img-top"
+                    alt="Image de {{ commune.name }}"
+                    style="height: 200px; object-fit: cover;">
 
-            <div class="card-body">
-                <!-- Nom de la commune -->
-                <h5 class="card-title text-center">{{ commune.nom }}</h5>
+                <!-- Contenu de la carte -->
+                <div class="card-body d-flex flex-column">
+                    <!-- Nom de la commune -->
+                    <h5 class="card-title text-center fw-bold" style="color: #FF6700; font-family: 'Poppins', sans-serif;">{{ commune.name }}</h5>
 
-                <!-- Note moyenne affichée avec des étoiles -->
-                <div class="d-flex justify-content-center align-items-center mb-2">
-                    <span class="badge bg-warning text-dark">
-                        {% if commune.note_moyenne %}
-                            {{ commune.note_moyenne }}
-                            <i class="fas fa-star"></i>
-                        {% else %}
-                            Non notée
-                        {% endif %}
-                    </span>
-                </div>
+                    <!-- Note moyenne avec étoiles -->
+                    <div class="d-flex justify-content-center align-items-center my-2">
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill" style="font-size: 0.9rem; background-color: #FFA500;">
+                            {% if commune.note_moyenne %}
+                                {{ commune.note_moyenne }}
+                                <i class="fas fa-star text-light ms-1"></i>
+                            {% else %}
+                                Non notée
+                            {% endif %}
+                        </span>
+                    </div>
 
-                <!-- Description ou message pour encourager l'action -->
-                <p class="card-text text-center text-muted">Découvrez cette commune et ses attraits !</p>
+                    <!-- Description -->
+                    <p class="text-center text-muted mb-4" style="font-family: 'Roboto', sans-serif;">
+                        Découvrez les atouts uniques de cette commune !
+                    </p>
 
-                <!-- Bouton pour voir plus -->
-                <div class="text-center">
-                    <a href="{% url 'detail_commune' commune.id %}" class="btn btn-primary btn-sm">
-                        Voir plus
-                    </a>
+                    <!-- Bouton Voir Plus -->
+                    <div class="mt-auto text-center">
+                        <a href="{% url 'detail_commune' commune.id %}"
+                           class="btn btn-outline-primary rounded-pill px-4 py-2"
+                           style="transition: background-color 0.3s ease, color 0.3s ease; font-family: 'Poppins', sans-serif;">
+                            Voir plus
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
+
+<!-- Animation au survol des cartes -->
+<style>
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .btn-outline-primary {
+            border-color: #FF6700;
+            color: #FF6700;
+            transition: all 0.3s ease;
+        }
+
+    .btn-outline-primary:hover {
+            background-color: #FF6700;
+            color: #fff;
+    }
+
+    .badge {
+        color: white;
+    }
+</style>
 {% endblock %}

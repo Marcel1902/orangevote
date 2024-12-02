@@ -3,7 +3,7 @@ from django.urls import path
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.styles import Alignment
-from vote.models import Commune, Vote, Zone, SousZone
+from vote.models import Commune, Vote, Zone, SousZone, Image
 
 
 # Fonction d'exportation des résultats
@@ -118,3 +118,4 @@ admin.site.register(Commune, CommuneAdmin)
 admin.site.register(Zone)
 admin.site.register(SousZone)
 admin.site.register(Vote)
+admin.site.register(Image)

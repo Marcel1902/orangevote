@@ -49,21 +49,27 @@ class Commune(models.Model):
                 vote.qualite_site + vote.originalite_support
                 for vote in votes
             )
-            # Ajouter le score des sites brandés
-            total_notes += self.calculer_nombre_sites()
             self.note_moyenne = total_notes / votes.count()
         else:
             self.note_moyenne = 0.0
         self.save()
 
 class Image(models.Model):
+    AVANT = 'avant'
+    APRES = 'apres'
+    TYPE_IMAGE_CHOICES = [
+        (AVANT, 'Avant'),
+        (APRES, 'Après'),
+    ]
+    type_image = models.CharField(max_length=5, choices=TYPE_IMAGE_CHOICES)
     commune = models.ForeignKey(Commune, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='images/')  # Chemin de stockage des images
+    image = models.ImageField(upload_to='images/')
+    emplacement = models.CharField(max_length=100, help_text="Nom de l'emplacement, ex : Gymnase, École")
     description = models.TextField(blank=True, null=True)  # Description optionnelle de l'image
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Date d'ajout de l'image
 
     def __str__(self):
-        return f"Image de {self.commune.name}"
+        return f"{self.get_type_image_display()} - {self.commune.name}"
 
 
 class Vote(models.Model):

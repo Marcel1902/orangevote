@@ -54,33 +54,13 @@
         animation: slideIn 1s ease-out;
     }
 
-    .gallery-wrapper {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin: 30px 0;
-        opacity: 0;
-        animation: fadeInUp 1.5s forwards;
-    }
-
-    .gallery-item {
-        position: relative;
-        overflow: hidden;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .gallery-item img {
+    /* Style pour les carousels */
+    .carousel-item img {
         width: 100%;
-        height: 100%;
+        height: 500px;
         object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .gallery-item:hover {
-        transform: scale(1.1);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .form-section {
@@ -133,17 +113,6 @@
         border-color: #156183;
     }
 
-    @keyframes fadeInUp {
-        0% {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
     @keyframes slideIn {
         0% {
             transform: translateX(-50%);
@@ -154,6 +123,38 @@
             opacity: 1;
         }
     }
+
+    .pagination-container {
+    margin-top: 20px;
+    font-size: 1rem;
+}
+
+.pagination {
+    border-radius: 30px;
+    background-color: #f8f9fa;
+    padding: 10px 0;
+}
+
+.pagination .page-item .page-link {
+    border-radius: 50px;
+    padding: 8px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #156183;
+    color: #fff;
+}
+
+.pagination .page-item:hover .page-link {
+    background-color: #fab734;
+    color: #fff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+}
+
 </style>
 
 <div class="container">
@@ -171,16 +172,100 @@
         </p>
     </div>
 
-    <!-- Galerie d'images avec Lightbox -->
-    <div class="gallery-wrapper">
-        {% for image in commune.images.all %}
-        <div class="gallery-item">
-            <a href="{{ image.image.url }}" data-lightbox="commune-gallery" data-title="Image de {{ commune.nom }}">
-                <img src="{{ image.image.url }}" alt="Image de {{ commune.nom }}">
-            </a>
+<!-- Galerie d'images par emplacement avec pagination -->
+{% for emplacement, images_avant, images_apres in page_obj %}
+    <div class="row mb-4">
+        <h3 class="col-12 text-center">{{ emplacement }}</h3>
+        <div class="col-md-6">
+            <h4 class="text-center fw-bold">Avant</h4>
+            <!-- Galerie d'images avant -->
+            <div id="carouselAvant{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image_avant in images_avant %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image_avant.image.url }}" class="d-block w-100" alt="Image avant {{ emplacement }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselAvant{{ forloop.counter }}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselAvant{{ forloop.counter }}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            </div>
         </div>
-        {% endfor %}
+        <div class="col-md-6">
+            <h4 class="text-center fw-bold">Après</h4>
+            <!-- Galerie d'images après -->
+            <div id="carouselApres{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image_apres in images_apres %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image_apres.image.url }}" class="d-block w-100" alt="Image après {{ emplacement }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselApres{{ forloop.counter }}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselApres{{ forloop.counter }}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            </div>
+        </div>
     </div>
+{% endfor %}
+
+<!-- Pagination -->
+<div class="pagination-container mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="Première">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Pages numérotées -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Dernière">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+
 
     <hr>
 
@@ -189,7 +274,6 @@
         <h3>Donnez votre avis sur cette commune</h3>
         <form method="post" action="{% url 'vote_commune' commune.id %}">
             {% csrf_token %}
-
             <div class="mb-3">
                 <label for="qualite_site" class="form-label">Qualité du site de déploiement (1 à 5)</label>
                 <select name="qualite_site" id="qualite_site" class="form-select">
@@ -212,9 +296,8 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success w-100">Envoyer</button>
+            <button type="submit" class="btn btn-success w-100">Envoyer mon avis</button>
         </form>
     </div>
 </div>
-
 {% endblock %}

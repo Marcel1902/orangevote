@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from openpyxl.styles import Alignment
@@ -34,11 +35,43 @@ def commune(request):
     communes = Commune.objects.all()
     return render(request, 'vote/liste_communes.html', {'communes':communes})
 
+
+
+
 @login_required
 def detail_commune(request, commune_id):
     commune = get_object_or_404(Commune, id=commune_id)
+    all_images = commune.images.all()
+
+    # Grouper les images par emplacement
+    images_par_emplacement = []
+    for image in all_images:
+        emplacement = image.emplacement
+        # Chercher si l'emplacement existe déjà dans la liste
+        existing_entry = next((entry for entry in images_par_emplacement if entry[0] == emplacement), None)
+
+        if not existing_entry:
+            # Ajouter un nouvel emplacement avec des listes vides pour avant et après
+            images_par_emplacement.append([emplacement, [], []])
+            existing_entry = images_par_emplacement[-1]
+
+        # Ajouter l'image à la bonne catégorie (avant ou après)
+        if image.type_image == 'avant':
+            existing_entry[1].append(image)
+        elif image.type_image == 'apres':
+            existing_entry[2].append(image)
+
+    # Pagination des emplacements (2 par page)
+    paginator = Paginator(images_par_emplacement, 2)  # 2 emplacements par page
+    page_number = request.GET.get('page')  # Récupérer la page actuelle
+    page_obj = paginator.get_page(page_number)
+
     commune.calculer_note_moyenne()
-    return render(request, 'vote/detail_commune.html', {'commune': commune})
+
+    return render(request, 'vote/detail_commune.html', {
+        'commune': commune,
+        'page_obj': page_obj,  # Passer l'objet de page
+    })
 
 
 @login_required

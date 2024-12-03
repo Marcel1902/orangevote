@@ -154,6 +154,28 @@
 .pagination .page-item.disabled .page-link {
     color: #ccc;
 }
+    .no-images-message {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #156183;
+        text-align: center;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
 
 </style>
 
@@ -179,6 +201,7 @@
         <div class="col-md-6">
             <h4 class="text-center fw-bold">Avant</h4>
             <!-- Galerie d'images avant -->
+            {% if images_avant %}
             <div id="carouselAvant{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     {% for image_avant in images_avant %}
@@ -196,6 +219,9 @@
                     <span class="visually-hidden">Suivant</span>
                 </button>
             </div>
+            {% else %}
+            <p class="no-images-message">Aucune image avant disponible pour cet emplacement.</p>
+            {% endif %}
         </div>
         <div class="col-md-6">
             <h4 class="text-center fw-bold">Après</h4>

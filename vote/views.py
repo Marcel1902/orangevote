@@ -33,7 +33,10 @@ def deconnexion(request):
 @login_required
 def commune(request):
     communes = Commune.objects.all()
-    return render(request, 'vote/liste_communes.html', {'communes':communes})
+    paginator = Paginator(communes, 6)
+    page_number = request.GET.get('page')  # Récupérer la page actuelle
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'vote/liste_communes.html', {'communes':communes, 'page_obj': page_obj})
 
 
 

@@ -1,0 +1,23 @@
+{% extends 'vote/base.html' %}
+
+{% block title %}Sous-Zones{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center fw-bold mb-4" style="color: #156183;">Sous-Zones de {{ zone.nom }}</h1>
+    <div class="row">
+        {% for sous_zone in sous_zones %}
+        <div class="col-md-3 my-3">
+            <a href="{% url 'liste_communes' sous_zone.id %}" class="text-decoration-none">
+                <div class="card text-center shadow-sm border-0 rounded-4">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <i class="fas fa-folder fa-5x text-primary mb-3"></i>
+                        <h5 class="card-title text-dark fw-bold">{{ sous_zone.name }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -2,12 +2,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from openpyxl.styles import Alignment
-from openpyxl.workbook import Workbook
 
-from .models import Vote, Image, Commune
+
+from .models import Vote, Image, Commune, Zone, SousZone
+
+
 # Create your views here.
 
 def connexion(request):
@@ -18,7 +18,7 @@ def connexion(request):
         if user is not None:
             # Authentifie l'utilisateur et redirige vers la page d'accueil
             login(request, user)
-            return redirect('liste_communes')
+            return redirect('liste_zones')
         else:
             # Erreur d'authentification
             messages.error(request, "Identifiants invalides.")
@@ -30,13 +30,23 @@ def deconnexion(request):
     logout(request)
     return redirect('connexion')
 
+def liste_zones(request):
+    zones = Zone.objects.all()
+    return render(request, 'vote/liste_zones.html', {'zones': zones})
+
+def liste_sous_zones(request, zone_id):
+    zone = get_object_or_404(Zone, id=zone_id)
+    sous_zones = zone.souszones.all()
+    return render(request, 'vote/liste_sous_zones.html', {'zone': zone, 'sous_zones': sous_zones})
+
 @login_required
-def commune(request):
-    communes = Commune.objects.all()
+def commune(request, sous_zone_id):
+    sous_zone = get_object_or_404(SousZone, id=sous_zone_id)
+    communes = sous_zone.communes.all()
     paginator = Paginator(communes, 6)
     page_number = request.GET.get('page')  # Récupérer la page actuelle
     page_obj = paginator.get_page(page_number)
-    return render(request, 'vote/liste_communes.html', {'communes':communes, 'page_obj': page_obj})
+    return render(request, 'vote/liste_communes.html', {'communes':communes, 'page_obj': page_obj, 'sous_zone': sous_zone})
 
 
 

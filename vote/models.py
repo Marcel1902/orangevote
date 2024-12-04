@@ -69,7 +69,7 @@ class Image(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Date d'ajout de l'image
 
     def __str__(self):
-        return f"{self.get_type_image_display()} - {self.commune.name}"
+        return f"image {self.get_type_image_display()} du {self.emplacement} - {self.commune.name}"
 
 
 class Vote(models.Model):

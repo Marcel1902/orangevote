@@ -5,6 +5,7 @@ from django.db import models
 
 class Zone(models.Model):
     nom = models.CharField(max_length=255)  # Nom de la zone
+    image = models.ImageField(upload_to='images/')
 
     def calculer_score_zone(self):
         """Calcule le score total d'une zone en additionnant les scores de ses sous-zones."""
@@ -18,6 +19,7 @@ class Zone(models.Model):
 class SousZone(models.Model):
     name = models.CharField(max_length=255, unique=True)  # Nom de la sous-zone
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE, related_name="souszones")
+    image = models.ImageField(upload_to='images/')
 
     def __str__(self):
         return self.name

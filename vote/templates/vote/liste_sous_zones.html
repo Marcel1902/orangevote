@@ -9,9 +9,9 @@
         {% for sous_zone in sous_zones %}
         <div class="col-md-3 my-3">
             <a href="{% url 'liste_communes' sous_zone.id %}" class="text-decoration-none">
-                <div class="card text-center shadow-sm border-0 rounded-4">
-                    <div class="card-body d-flex flex-column align-items-center">
-                        <i class="fas fa-folder fa-5x text-primary mb-3"></i>
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                    <img src="{{ sous_zone.image.url }}" alt="{{ sous_zone.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="card-body text-center">
                         <h5 class="card-title text-dark fw-bold">{{ sous_zone.name }}</h5>
                     </div>
                 </div>

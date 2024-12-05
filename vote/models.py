@@ -62,7 +62,7 @@ class Commune(models.Model):
         votes = self.votes.all()  # Récupère tous les votes associés à cette commune
         if votes.exists():
             total_notes = sum(
-                vote.qualite_site + vote.originalite_support
+                vote.qualite_site + vote.originalite_support + vote.site_brandes + vote.repris_concurrence + vote.rapidite_deploiement
                 for vote in votes
             )
             self.note_moyenne = total_notes / votes.count()
@@ -93,6 +93,9 @@ class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='votes')  # Un utilisateur peut voter
     qualite_site = models.PositiveSmallIntegerField(default=0)  # Qualité des sites (1-5)
     originalite_support = models.PositiveSmallIntegerField(default=0)
+    site_brandes = models.PositiveSmallIntegerField(default=0)
+    repris_concurrence = models.PositiveSmallIntegerField(default=0)
+    rapidite_deploiement = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)  # Date du vote
 
     class Meta:

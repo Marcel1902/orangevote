@@ -17,7 +17,7 @@ def export_vote_results(modeladmin, request, queryset):
     # Feuille des résultats des communes
     ws_commune = wb.active
     ws_commune.title = "Résultats des Communes"
-    headers_commune = ['Commune', 'Qualité du Site', 'Originalité du Support', 'Total']
+    headers_commune = ['Commune', 'Qualité du Site', 'Originalité du Support', 'site_brandes', 'repris_concurrence', 'rapidite_deploiement', 'Total']
     ws_commune.append(headers_commune)
 
     # Appliquer un alignement centré aux en-têtes de la feuille commune
@@ -29,50 +29,65 @@ def export_vote_results(modeladmin, request, queryset):
 
     for commune in queryset:
         if commune.name not in commune_results:
-            commune_results[commune.name] = {'qualite_site': 0, 'originalite_support': 0}
+            commune_results[commune.name] = {'qualite_site': 0, 'originalite_support': 0, 'site_brandes': 0, 'repris_concurrence': 0, 'rapidite_deploiement':0}
 
         for vote in commune.votes.all():
             commune_results[commune.name]['qualite_site'] += vote.qualite_site
             commune_results[commune.name]['originalite_support'] += vote.originalite_support
+            commune_results[commune.name]['site_brandes'] += vote.site_brandes
+            commune_results[commune.name]['repris_concurrence'] += vote.repris_concurrence
+            commune_results[commune.name]['rapidite_deploiement'] += vote.rapidite_deploiement
 
     # Ajout des données regroupées dans la feuille Excel
     for commune_name, results in commune_results.items():
-        total_notes = results['qualite_site'] + results['originalite_support']
+        total_notes = results['qualite_site'] + results['originalite_support'] + results['site_brandes'] + results['repris_concurrence'] +results['rapidite_deploiement']
         row = [
             commune_name,
             results['qualite_site'],  # Total Qualité du Site
-            results['originalite_support'],  # Total Originalité du Support
+            results['originalite_support'], # Total Originalité du Support
+            results['site_brandes'],
+            results['repris_concurrence'],
+            results['rapidite_deploiement'],  # Total Rapideté de Déploiement
             total_notes,  # Total général
         ]
         ws_commune.append(row)
 
     # Feuille des résultats des sous-zones
     ws_sous_zone = wb.create_sheet(title="Résultats des Sous-Zones")
-    headers_sous_zone = ['Sous-zone', 'Qualité du Site', 'Originalité du Support', 'Total']
+    headers_sous_zone = ['Sous-zone', 'Qualité du Site', 'Originalité du Support', 'site_brandes', 'repris_concurrence', 'rapidite_deploiement', 'Total']
     ws_sous_zone.append(headers_sous_zone)
 
     for souszone in SousZone.objects.all():
         total_qualite_site = 0
         total_originalite_support = 0
+        total_site_brandes = 0
+        total_repris_concurrence = 0
+        total_rapidite_deploiement = 0
 
         # Récupérer les communes liées à cette sous-zone
         for commune in souszone.communes.all():
             for vote in commune.votes.all():
                 total_qualite_site += vote.qualite_site
                 total_originalite_support += vote.originalite_support
+                total_site_brandes += vote.site_brandes
+                total_repris_concurrence += vote.repris_concurrence
+                total_rapidite_deploiement += vote.rapidite_deploiement
 
-        total_notes = total_qualite_site + total_originalite_support
-        row = [souszone.name, total_qualite_site, total_originalite_support, total_notes]
+        total_notes = total_qualite_site + total_originalite_support + total_site_brandes + total_repris_concurrence + total_rapidite_deploiement
+        row = [souszone.name, total_qualite_site, total_originalite_support, total_site_brandes, total_repris_concurrence, total_rapidite_deploiement, total_notes]
         ws_sous_zone.append(row)
 
     # Feuille des résultats des zones
     ws_zone = wb.create_sheet(title="Résultats des Zones")
-    headers_zone = ['Zone', 'Qualité du Site', 'Originalité du Support', 'Note des Sites Brandés', 'Total']
+    headers_zone = ['Zone', 'Qualité du Site', 'Originalité du Support', 'site_brandes', 'repris_concurrence', 'rapidite_deploiement', 'Total']
     ws_zone.append(headers_zone)
 
     for zone in Zone.objects.all():
         total_qualite_site = 0
         total_originalite_support = 0
+        total_site_brandes = 0
+        total_repris_concurrence = 0
+        total_rapidite_deploiement = 0
 
         # Récupérer les sous-zones liées à cette zone
         for souszone in zone.souszones.all():
@@ -80,9 +95,12 @@ def export_vote_results(modeladmin, request, queryset):
                 for vote in commune.votes.all():
                     total_qualite_site += vote.qualite_site
                     total_originalite_support += vote.originalite_support
+                    total_site_brandes += vote.site_brandes
+                    total_repris_concurrence += vote.repris_concurrence
+                    total_rapidite_deploiement += vote.rapidite_deploiement
 
-        total_notes = total_qualite_site + total_originalite_support
-        row = [zone.nom, total_qualite_site, total_originalite_support, total_notes]
+        total_notes = total_qualite_site + total_originalite_support + total_site_brandes + total_repris_concurrence + total_rapidite_deploiement
+        row = [zone.nom, total_qualite_site, total_originalite_support, total_site_brandes, total_repris_concurrence, total_rapidite_deploiement,  total_notes]
         ws_zone.append(row)
 
     # Créer la réponse HTTP pour télécharger le fichier Excel

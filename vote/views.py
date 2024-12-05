@@ -95,6 +95,9 @@ def vote_commune(request, commune_id):
         try:
             qualite_site = int(request.POST.get('qualite_site', 0))
             originalite_support = int(request.POST.get('originalite_support', 0))
+            site_brandes = int(request.POST.get('site_brandes', 0))
+            repris_concurrence = int(request.POST.get('repris_concurrence', 0))
+            rapidite_deploiement = int(request.POST.get('rapidite_deploiement', 0))
 
             # Validation des données
             if not (1 <= qualite_site <= 5 and 1 <= originalite_support <= 5):
@@ -110,6 +113,9 @@ def vote_commune(request, commune_id):
                     user=request.user,
                     qualite_site=qualite_site,
                     originalite_support=originalite_support,
+                    site_brandes = site_brandes,
+                    repris_concurrence = repris_concurrence,
+                    rapidite_deploiement = rapidite_deploiement,
                 )
                 # Recalcul de la note moyenne
                 commune.calculer_note_moyenne()

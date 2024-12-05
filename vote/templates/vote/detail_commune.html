@@ -169,6 +169,54 @@
         animation: fadeIn 0.8s ease-in-out;
     }
 
+    .informations {
+        margin-top: 20px;
+    }
+
+    .information {
+        padding: 10px;
+    }
+
+    .informations .information p {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .informations .information strong {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .informations .information .badge {
+        font-size: 14px;
+        padding: 8px 15px;
+        border-radius: 20px;
+        background-color: #007bff;
+        color: white;
+    }
+
+    .informations .information .badge.bg-primary {
+        background-color: #007bff; /* Bleu de fond */
+    }
+
+    /* Améliorer la visibilité sur les petites résolutions */
+    @media (max-width: 768px) {
+        .informations {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .information {
+            width: 100%;
+        }
+
+        .informations .information .badge {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
+
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -181,7 +229,7 @@
 
 <div class="container">
     <!-- Titre -->
-    <h1>{{ commune.nom }}</h1>
+    <h1>{{ commune.name }}</h1>
 
     <!-- Section Note moyenne avec background -->
     <div class="note-section text-center">
@@ -192,6 +240,19 @@
                 <span class="badge bg-secondary">Non notée</span>
             {% endif %}
         </p>
+    </div>
+
+    <!-- Affichage des informations supplémentaires -->
+    <div class="row informations mb-5">
+        <div class="col-md-4 information">
+            <p><strong>Sites Brandes:</strong> <span class="badge bg-primary">{{ commune.site_brandes }}</span></p>
+        </div>
+        <div class="col-md-4 information">
+            <p><strong>Repris par la concurrence:</strong> <span class="badge bg-primary">{{ commune.repris_concurrence }}</span></p>
+        </div>
+        <div class="col-md-4 information">
+            <p><strong>Rapidité de déploiement:</strong> <span class="badge bg-primary">{{ commune.rapidite_deploiement }}</span></p>
+        </div>
     </div>
 
 <!-- Galerie d'images par emplacement avec pagination -->
@@ -320,6 +381,20 @@
                     <option value="4">4 - Bonne</option>
                     <option value="5">5 - Excellente</option>
                 </select>
+            </div>
+
+            <div class="mb-3 form-group">
+                <label for="site_brandes" class="form-label">Nombres des sites brandes:</label>
+                <input type="number" class="form-control" id="site_brandes" name="site_brandes" placeholder="Note pour le nombre de site">
+            </div>
+            <div class="mb-3">
+                <label for="repris_concurrence" class="form-label">Support repris a la concurrence:</label>
+                <input type="number" class="form-control" id="repris_concurrence" name="repris_concurrence" placeholder="Note pour les site repris a la concurrence">
+            </div>
+
+            <div class="mb-3">
+                <label for="rapidite_deploiement" class="form-label">Rapidite de deploiement:</label>
+                <input type="number" class="form-control" id="rapidite_deploiement" name="rapidite_deploiement" placeholder="Note pour la rapidite de deploiement">
             </div>
 
             <button type="submit" class="btn btn-success w-100">Envoyer mon avis</button>

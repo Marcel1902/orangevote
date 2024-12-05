@@ -5,8 +5,8 @@
 {% block content %}
 <div class="container py-5">
     <!-- Titre principal -->
-    <h1 class="text-center fw-bold mb-4" style="color: #156183; font-family: 'Poppins', sans-serif;">
-    Communes de la Sous-Zone {{ sous_zone.name }}
+    <h1 class="text-center fw-bold mb-4" style="color: #FF6700; font-family: 'Poppins', sans-serif;">
+        Communes de la Sous-Zone {{ sous_zone.name }}
     </h1>
 
     <p class="text-center text-muted mb-5" style="font-size: 1.2rem; font-family: 'Roboto', sans-serif;">
@@ -50,7 +50,7 @@
                     <!-- Bouton Voir Plus -->
                     <div class="mt-auto text-center">
                         <a href="{% url 'detail_commune' commune.id %}"
-                           class="btn btn-outline-primary rounded-pill px-4 py-2"
+                           class="btn btn-outline-warning rounded-pill px-4 py-2"
                            style="transition: background-color 0.3s ease, color 0.3s ease; font-family: 'Poppins', sans-serif;">
                             Voir plus
                         </a>
@@ -61,48 +61,48 @@
         {% endfor %}
     </div>
     <!-- Pagination -->
-<div class="pagination-container mt-4">
-    <ul class="pagination justify-content-center">
-        {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page=1" aria-label="Première">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
-                    <span aria-hidden="true">&lt;</span>
-                </a>
-            </li>
-        {% endif %}
-
-        <!-- Pages numérotées -->
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <li class="page-item active" aria-current="page">
-                    <span class="page-link">{{ num }}</span>
-                </li>
-            {% else %}
+    <div class="pagination-container mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    <a class="page-link" href="?page=1" aria-label="Première">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Précédent">
+                        <span aria-hidden="true">&lt;</span>
+                    </a>
                 </li>
             {% endif %}
-        {% endfor %}
 
-        {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
-                    <span aria-hidden="true">&gt;</span>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Dernière">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        {% endif %}
-    </ul>
-</div>
+            <!-- Pages numérotées -->
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Suivant">
+                        <span aria-hidden="true">&gt;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Dernière">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
 
 </div>
 
@@ -112,15 +112,15 @@
         transform: scale(1.05);
     }
 
-    .btn-outline-primary {
-            border-color: #FF6700;
-            color: #FF6700;
-            transition: all 0.3s ease;
-        }
+    .btn-outline-warning {
+        border-color: #FFA500;
+        color: #FFA500;
+        transition: all 0.3s ease;
+    }
 
-    .btn-outline-primary:hover {
-            background-color: #FF6700;
-            color: #fff;
+    .btn-outline-warning:hover {
+        background-color: #FFA500;
+        color: #fff;
     }
 
     .badge {
@@ -128,34 +128,34 @@
     }
 
     .pagination-container {
-    margin-top: 20px;
-    font-size: 1rem;
-}
+        margin-top: 20px;
+        font-size: 1rem;
+    }
 
-.pagination {
-    border-radius: 30px;
-    background-color: #f8f9fa;
-    padding: 10px 0;
-}
+    .pagination {
+        border-radius: 30px;
+        background-color: #f8f9fa;
+        padding: 10px 0;
+    }
 
-.pagination .page-item .page-link {
-    border-radius: 50px;
-    padding: 8px 15px;
-    transition: background-color 0.3s ease;
-}
+    .pagination .page-item .page-link {
+        border-radius: 50px;
+        padding: 8px 15px;
+        transition: background-color 0.3s ease;
+    }
 
-.pagination .page-item.active .page-link {
-    background-color: #156183;
-    color: #fff;
-}
+    .pagination .page-item.active .page-link {
+        background-color: #FF6700;
+        color: #fff;
+    }
 
-.pagination .page-item:hover .page-link {
-    background-color: #fab734;
-    color: #fff;
-}
+    .pagination .page-item:hover .page-link {
+        background-color: #FFA500;
+        color: #fff;
+    }
 
-.pagination .page-item.disabled .page-link {
-    color: #ccc;
-}
+    .pagination .page-item.disabled .page-link {
+        color: #ccc;
+    }
 </style>
 {% endblock %}

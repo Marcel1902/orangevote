@@ -9,88 +9,89 @@
     <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        /* Polices principales */
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
+   <style>
+    /* Polices principales */
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
 
-        h1, h2, h3, .navbar-brand {
-            font-family: 'Poppins', sans-serif;
-        }
+    h1, h2, h3, .navbar-brand {
+        font-family: 'Poppins', sans-serif;
+    }
 
-        /* Navigation */
-        .navbar {
-            background: linear-gradient(90deg, #0d3b66, #156183);
-        }
+    /* Navigation */
+    .navbar {
+        background: linear-gradient(90deg, #FF5722, #FF7043); /* Dégradé orange */
+    }
 
-        .navbar-brand {
-            color: #ffffff;
-            font-weight: 600;
-        }
+    .navbar-brand {
+        color: #ffffff;
+        font-weight: 600;
+    }
 
-        .navbar-nav .nav-link {
-            color: #e0e0e0;
-            transition: color 0.3s ease;
-        }
+    .navbar-nav .nav-link {
+        color: #e0e0e0;
+        transition: color 0.3s ease;
+    }
 
-        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
-            color: #00bcd4; /* Teal */
-        }
+    .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+        color: #FF9800; /* Orange clair */
+    }
 
-        /* Formulaire de recherche */
-        .input-group input {
-            border-radius: 30px;
-            border: 1px solid #0d3b66;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    /* Formulaire de recherche */
+    .input-group input {
+        border-radius: 30px;
+        border: 1px solid #FF5722;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-        .input-group input:focus {
-            outline: none;
-            border-color: #00bcd4; /* Teal */
-        }
+    .input-group input:focus {
+        outline: none;
+        border-color: #FF9800; /* Orange clair */
+    }
 
-        .search-btn {
-            border-color: #0d3b66;
-            background-color: #0d3b66;
-            color: #ffffff;
-            transition: all 0.3s ease;
-        }
+    .search-btn {
+        border-color: #FF5722;
+        background-color: #FF5722;
+        color: #ffffff;
+        transition: all 0.3s ease;
+    }
 
-        .search-btn:hover {
-            background-color: #00bcd4; /* Teal */
-            color: #ffffff;
-        }
+    .search-btn:hover {
+        background-color: #FF9800; /* Orange clair */
+        color: #ffffff;
+    }
 
-        /* Bouton Déconnexion */
-        .logout-user a {
-            font-size: 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
+    /* Bouton Déconnexion */
+    .logout-user a {
+        font-size: 1rem;
+        color: #ffffff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
 
-        .logout-user a:hover {
-            color: #00bcd4; /* Teal */
-        }
+    .logout-user a:hover {
+        color: #FF9800; /* Orange clair */
+    }
 
-        /* Messages */
-        .alert {
-            margin-top: 20px;
-            animation: fadeIn 1s;
-        }
+    /* Messages */
+    .alert {
+        margin-top: 20px;
+        animation: fadeIn 1s;
+    }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
         }
-    </style>
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
 </head>
 
 <body>

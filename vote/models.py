@@ -1,3 +1,6 @@
+from email.policy import default
+from random import choices
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -31,9 +34,20 @@ class SousZone(models.Model):
         return total_score
 
 class Commune(models.Model):
+    Rapide = 'Rapide'
+    Moyenne = 'Moyenne'
+    Lent = 'Lent'
+    deploiment_choices = [
+        (Rapide, 'Rapide'),
+        (Moyenne, 'Moyenne'),
+        (Lent, 'Lent'),
+    ]
     name = models.CharField(max_length=255, unique=True)  # Nom unique pour la commune
     description = models.TextField(blank=True, null=True)  # Description optionnelle
     note_moyenne = models.FloatField(default=0.0)  # Note moyenne de la commune (calculée)
+    site_brandes = models.IntegerField(default=1)
+    repris_concurrence = models.IntegerField(default=0)
+    rapidite_deploiement = models.CharField(max_length=25, choices=deploiment_choices, default=Moyenne)
     sous_zone = models.ForeignKey(SousZone, on_delete=models.CASCADE, related_name="communes")
 
     def __str__(self):

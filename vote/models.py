@@ -81,7 +81,7 @@ class Commune(models.Model):
 
         # Calcul de la note moyenne
         if total_criteria > 0:
-            self.note_moyenne = total_notes / total_criteria
+            self.note_moyenne = round(total_notes / total_criteria, 2)
         else:
             self.note_moyenne = 0.0
 

@@ -93,36 +93,33 @@ def vote_commune(request, commune_id):
         commune = get_object_or_404(Commune, id=commune_id)
 
         try:
+            # Récupération et validation des données des critères visibles
             qualite_site = int(request.POST.get('qualite_site', 0))
             originalite_support = int(request.POST.get('originalite_support', 0))
-            site_brandes = int(request.POST.get('site_brandes', 0))
-            repris_concurrence = int(request.POST.get('repris_concurrence', 0))
-            rapidite_deploiement = int(request.POST.get('rapidite_deploiement', 0))
 
-            # Validation des données
+            # Validation des notes de qualité (1-5)
             if not (1 <= qualite_site <= 5 and 1 <= originalite_support <= 5):
                 raise ValueError("Les notes doivent être entre 1 et 5.")
 
-            # Vérification si l'utilisateur a déjà voté
+            # Vérification si l'utilisateur a déjà voté pour cette commune
             if Vote.objects.filter(commune=commune, user=request.user).exists():
                 messages.warning(request, "Vous avez déjà voté pour cette commune.")
             else:
-                # Création du vote
+                # Création du vote avec les champs visibles uniquement
                 Vote.objects.create(
                     commune=commune,
                     user=request.user,
                     qualite_site=qualite_site,
                     originalite_support=originalite_support,
-                    site_brandes = site_brandes,
-                    repris_concurrence = repris_concurrence,
-                    rapidite_deploiement = rapidite_deploiement,
                 )
                 # Recalcul de la note moyenne
                 commune.calculer_note_moyenne()
                 messages.success(request, "Votre vote a été enregistré.")
+
         except ValueError as e:
             messages.error(request, str(e))
 
+        # Redirection vers la même page pour afficher les messages
         return redirect('detail_commune', commune_id=commune.id)
 
 

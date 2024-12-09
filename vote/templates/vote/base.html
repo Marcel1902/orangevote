@@ -107,6 +107,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-5">
+                        <a class="nav-link" href="{% url 'liste_zones' %}" style="font-size: 20px;">Accueil</a>
+                    </li>
                     <li class="nav-item">
                         <form method="get" action="{% url 'rechercher_commune' %}" class="d-flex input-group">
                             <input type="text" name="q" class="form-control" placeholder="Rechercher une commune" value="{{ query }}">

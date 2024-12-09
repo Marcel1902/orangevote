@@ -245,10 +245,10 @@
     <!-- Affichage des informations supplémentaires -->
     <div class="row informations mb-5">
         <div class="col-md-4 information">
-            <p><strong>Sites Brandes:</strong> <span class="badge bg-primary">{{ commune.site_brandes }}</span></p>
+            <p><strong>Nombre de sites brandés:</strong> <span class="badge bg-primary">{{ commune.site_brandes }}</span></p>
         </div>
         <div class="col-md-4 information">
-            <p><strong>Repris par la concurrence:</strong> <span class="badge bg-primary">{{ commune.repris_concurrence }}</span></p>
+            <p><strong>Sites repris à la concurrence:</strong> <span class="badge bg-primary">{{ commune.repris_concurrence }}</span></p>
         </div>
         <div class="col-md-4 information">
             <p><strong>Rapidité de déploiement:</strong> <span class="badge bg-primary">{{ commune.rapidite_deploiement }}</span></p>
@@ -362,39 +362,25 @@
         <form method="post" action="{% url 'vote_commune' commune.id %}">
             {% csrf_token %}
             <div class="mb-3">
-                <label for="qualite_site" class="form-label">Qualité du site de déploiement (1 à 5)</label>
+                <label for="qualite_site" class="form-label">Zone de chalandise – Taux de fréquentation</label>
                 <select name="qualite_site" id="qualite_site" class="form-select">
-                    <option value="1">1 - Très faible</option>
-                    <option value="2">2 - Faible</option>
-                    <option value="3">3 - Moyenne</option>
-                    <option value="4">4 - Bonne</option>
-                    <option value="5">5 - Excellente</option>
+                    <option value="1">Très faible : Zone peu attractive ou mal desservie</option>
+                    <option value="2">Faible : Zone modérément attractive, faible fréquentation</option>
+                    <option value="3">Moyenne : Zone correcte avec une fréquentation acceptable</option>
+                    <option value="4">Bonne : Zone attractive avec une fréquentation régulière et satisfaisante</option>
+                    <option value="5">Excellente : Zone stratégique avec une forte fréquentation</option>
                 </select>
             </div>
 
             <div class="mb-3">
-                <label for="originalite_support" class="form-label">Originalité du support publicitaire (1 à 5)</label>
+                <label for="originalite_support" class="form-label">Originalité des supports</label>
                 <select name="originalite_support" id="originalite_support" class="form-select">
-                    <option value="1">1 - Très faible</option>
-                    <option value="2">2 - Faible</option>
-                    <option value="3">3 - Moyenne</option>
-                    <option value="4">4 - Bonne</option>
-                    <option value="5">5 - Excellente</option>
+                    <option value="1">Très faible : Support banal</option>
+                    <option value="2">Faible : Support légèrement différencié mais peu inspirant</option>
+                    <option value="3">Moyenne : Support intéressant, avec quelques éléments créatifs</option>
+                    <option value="4">Bonne : Support original, avec des idées marquantes et une exécution notable</option>
+                    <option value="5">Excellente : Support exceptionnellement innovant et mémorable.</option>
                 </select>
-            </div>
-
-            <div class="mb-3 form-group">
-                <label for="site_brandes" class="form-label">Nombres des sites brandes:</label>
-                <input type="number" class="form-control" id="site_brandes" name="site_brandes" placeholder="Note pour le nombre de site">
-            </div>
-            <div class="mb-3">
-                <label for="repris_concurrence" class="form-label">Support repris a la concurrence:</label>
-                <input type="number" class="form-control" id="repris_concurrence" name="repris_concurrence" placeholder="Note pour les site repris a la concurrence">
-            </div>
-
-            <div class="mb-3">
-                <label for="rapidite_deploiement" class="form-label">Rapidite de deploiement:</label>
-                <input type="number" class="form-control" id="rapidite_deploiement" name="rapidite_deploiement" placeholder="Note pour la rapidite de deploiement">
             </div>
 
             <button type="submit" class="btn btn-success w-100">Envoyer mon avis</button>

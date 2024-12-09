@@ -44,8 +44,8 @@ class Commune(models.Model):
     ]
     name = models.CharField(max_length=255, unique=True)  # Nom unique pour la commune
     description = models.TextField(blank=True, null=True)  # Description optionnelle
-    note_moyenne = models.FloatField(default=0.0)  # Note moyenne de la commune (calculée)
-    site_brandes = models.IntegerField(default=1)
+    note_moyenne = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)  # Note moyenne de la commune (calculée)
+    site_brandes = models.IntegerField(default=0)
     repris_concurrence = models.IntegerField(default=0)
     rapidite_deploiement = models.CharField(max_length=25, choices=deploiment_choices, default=Moyenne)
     sous_zone = models.ForeignKey(SousZone, on_delete=models.CASCADE, related_name="communes")
@@ -53,23 +53,49 @@ class Commune(models.Model):
     def __str__(self):
         return self.name
 
-
     def calculer_note_moyenne(self):
         """
         Met à jour la note moyenne de la commune basée sur les votes,
-        en prenant en compte les critères calculés.
+        en prenant en compte les critères calculés dans Commune et Vote.
         """
         votes = self.votes.all()  # Récupère tous les votes associés à cette commune
+        total_notes = 0
+        total_criteria = 0
+
+        # Calcul des notes des votes
         if votes.exists():
-            total_notes = sum(
-                vote.qualite_site + vote.originalite_support + vote.site_brandes + vote.repris_concurrence + vote.rapidite_deploiement
-                for vote in votes
-            )
-            self.note_moyenne = total_notes / votes.count()
+            for vote in votes:
+                total_notes += (
+                        vote.qualite_site +
+                        vote.originalite_support
+                )
+            total_criteria += votes.count() * 2  # 2 critères par vote (qualite_site, originalite_support)
+
+        # Calcul des critères dans Commune
+        total_notes += (
+                self.site_brandes +
+                self.repris_concurrence +
+                self.get_rapidite_deploiement_value()
+        )
+        total_criteria += 3  # 3 critères dans Commune (site_brandes, repris_concurrence, rapidite_deploiement)
+
+        # Calcul de la note moyenne
+        if total_criteria > 0:
+            self.note_moyenne = total_notes / total_criteria
         else:
             self.note_moyenne = 0.0
+
         self.save()
 
+    def get_rapidite_deploiement_value(self):
+        """Convertit la valeur de 'rapidite_deploiement' en une valeur numérique."""
+        if self.rapidite_deploiement == self.Rapide:
+            return 5
+        elif self.rapidite_deploiement == self.Moyenne:
+            return 3
+        elif self.rapidite_deploiement == self.Lent:
+            return 1
+        return 0  # Valeur par défaut si aucun choix n'est trouvé
 class Image(models.Model):
     AVANT = 'avant'
     APRES = 'apres'
@@ -93,9 +119,6 @@ class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='votes')  # Un utilisateur peut voter
     qualite_site = models.PositiveSmallIntegerField(default=0)  # Qualité des sites (1-5)
     originalite_support = models.PositiveSmallIntegerField(default=0)
-    site_brandes = models.PositiveSmallIntegerField(default=0)
-    repris_concurrence = models.PositiveSmallIntegerField(default=0)
-    rapidite_deploiement = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)  # Date du vote
 
     class Meta:
@@ -103,5 +126,18 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"Vote de {self.user.username} pour {self.commune.name}"
+
+        # Ajoutez ces propriétés pour récupérer les critères administratifs
+        @property
+        def site_brandes(self):
+            return self.commune.site_brandes
+
+        @property
+        def repris_concurrence(self):
+            return self.commune.repris_concurrence
+
+        @property
+        def rapidite_deploiement(self):
+            return self.commune.rapidite_deploiement
 
 

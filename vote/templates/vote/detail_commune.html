@@ -65,7 +65,7 @@
 
     .form-section {
         margin-top: 60px;
-        background-color: #ff7f32;  /* Orange */
+        background-color: rgba(0, 0, 0, 0.8);  /* Orange */
         padding: 40px 30px;
         border-radius: 15px;
         color: white;
@@ -234,8 +234,10 @@
     <!-- Section Note moyenne avec background -->
     <div class="note-section text-center">
         <p class="h5">Note moyenne :
-            {% if commune.note_moyenne %}
-                <span class="badge bg-primary">{{ commune.note_moyenne }}</span>
+            {% if commune.votes.exists %}
+                {% if commune.note_moyenne > 0 %}
+                    <span class="badge bg-primary">{{ commune.note_moyenne }}</span>
+                {% endif %}
             {% else %}
                 <span class="badge bg-secondary">Non notée</span>
             {% endif %}

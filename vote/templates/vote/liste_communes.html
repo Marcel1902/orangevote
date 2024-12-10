@@ -33,9 +33,11 @@
                     <!-- Note moyenne avec étoiles -->
                     <div class="d-flex justify-content-center align-items-center my-2">
                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill" style="font-size: 0.9rem; background-color: #FFA500;">
-                            {% if commune.note_moyenne %}
-                                {{ commune.note_moyenne }}
-                                <i class="fas fa-star text-light ms-1"></i>
+                            {% if commune.votes.exists %}
+                                {% if commune.note_moyenne > 0 %}
+                                    {{ commune.note_moyenne }}
+                                    <i class="fas fa-star text-light ms-1"></i>
+                                {% endif %}
                             {% else %}
                                 Non notée
                             {% endif %}

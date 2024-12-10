@@ -3,6 +3,8 @@ from random import choices
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Sum
+
 
 # Create your models here.
 
@@ -53,33 +55,32 @@ class Commune(models.Model):
     def __str__(self):
         return self.name
 
+    from django.db.models import Sum
+
     def calculer_note_moyenne(self):
-        """
-        Met à jour la note moyenne de la commune basée sur les votes,
-        en prenant en compte les critères calculés dans Commune et Vote.
-        """
-        votes = self.votes.all()  # Récupère tous les votes associés à cette commune
-        total_notes = 0
-        total_criteria = 0
+        # Calcul des votes via une annotation
+        votes_data = self.votes.aggregate(
+            total_qualite=Sum('qualite_site'),
+            total_originalite=Sum('originalite_support')
+        )
+        total_notes_votes = (
+                (votes_data['total_qualite'] or 0) +
+                (votes_data['total_originalite'] or 0)
+        )
+        total_criteria_votes = self.votes.count() * 2  # 2 critères par vote
 
-        # Calcul des notes des votes
-        if votes.exists():
-            for vote in votes:
-                total_notes += (
-                        vote.qualite_site +
-                        vote.originalite_support
-                )
-            total_criteria += votes.count() * 2  # 2 critères par vote (qualite_site, originalite_support)
-
-        # Calcul des critères dans Commune
-        total_notes += (
+        # Calcul des critères spécifiques à la commune
+        total_notes_commune = (
                 self.site_brandes +
                 self.repris_concurrence +
                 self.get_rapidite_deploiement_value()
         )
-        total_criteria += 3  # 3 critères dans Commune (site_brandes, repris_concurrence, rapidite_deploiement)
+        total_criteria_commune = 3  # Nombre de critères dans la commune
 
-        # Calcul de la note moyenne
+        # Calcul final
+        total_notes = total_notes_votes + total_notes_commune
+        total_criteria = total_criteria_votes + total_criteria_commune
+
         if total_criteria > 0:
             self.note_moyenne = round(total_notes / total_criteria, 2)
         else:

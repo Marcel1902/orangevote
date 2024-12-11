@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <style>
         body {
             background: linear-gradient(135deg, #6e7a88, #3c4b64);
@@ -26,7 +29,7 @@
         .login-container h2 {
             text-align: center;
             margin-bottom: 30px;
-            color: #3c4b64;
+            color: #e65c00;
         }
 
         .form-label {
@@ -41,8 +44,8 @@
         }
 
         .btn-primary {
-            background-color: #156183;
-            border-color: #156183;
+            background-color: #e65c00;
+            border: none;
             border-radius: 30px;
             padding: 10px 20px;
             font-size: 16px;
@@ -50,18 +53,37 @@
         }
 
         .btn-primary:hover {
-            background-color: #0f4f63;
+            background-color: #FF9800;
         }
         @media (max-width: 600px) {
            .login-container {
                 max-width: 100%;
             }
         }
+
+        /* Messages */
+        .alert {
+            margin-top: 20px;
+            animation: fadeIn 1s;
+            color: red;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Connexion</h2>
+        <!-- Messages flash -->
+        {% if messages %}
+        <div class="container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} fade show" role="alert">
+                <span class="text-center text-danger"> <i class="fas fa-alert-circle>"></i> {{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">

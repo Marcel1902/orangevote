@@ -21,7 +21,8 @@ def connexion(request):
             return redirect('liste_zones')
         else:
             # Erreur d'authentification
-            messages.error(request, "Identifiants invalides.")
+            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect!!!")
+            return redirect('connexion')
     return render(request, 'vote/index.html')
 
 @login_required
@@ -127,4 +128,7 @@ def vote_commune(request, commune_id):
 def rechercher_commune(request):
     query = request.GET.get('q', '')
     communes = Commune.objects.filter(name__icontains=query) if query else Commune.objects.all()
-    return render(request, 'vote/liste_communes.html', {'communes': communes, 'query': query})
+    paginator = Paginator(communes, 6)
+    page_number = request.GET.get('page')  # Récupérer la page actuelle
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'vote/liste_communes.html', {'communes': communes, 'query': query, 'page_obj': page_obj})

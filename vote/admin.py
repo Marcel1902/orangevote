@@ -1,11 +1,14 @@
 from django.contrib import admin
-from django.urls import path
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
 from vote.models import Commune, Vote, Zone, SousZone, Image
 from vote.views import commune
-  # Assurez-vous que ces modèles sont bien importés
+from django.utils.translation import  gettext_lazy as _
+
+admin.site.site_title = _('Evaluation Bright Orange')
+admin.site.site_header = _('Evaluation Bright Orange')
+admin.site.index_title = _('Evaluation Bright Orange')
 
 # Fonction d'exportation des résultats
 def export_vote_results(modeladmin, request, queryset):
@@ -41,7 +44,7 @@ def export_vote_results(modeladmin, request, queryset):
                 'originalite_support': 0,
                 'site_brandes': commune.site_brandes,  # Récupérer directement la valeur de la commune
                 'repris_concurrence': commune.repris_concurrence,  # Récupérer directement la valeur de la commune
-                'rapidite_deploiement': commune.get_rapidite_deploiement_value()
+                'rapidite_deploiement': commune.get_rapidite_deploiement_value() # recuperer la valeur via la fonction get_rapidite_deploiement parce que rapidite de deploiement est un Choisefield pas integerfield
             }
 
         # Calcul des votes pour chaque commune
